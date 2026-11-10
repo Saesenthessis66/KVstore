@@ -7,6 +7,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
+
+set(SANITIZE "" CACHE STRING "Sanitizer to enable: thread, address or undefined (empty = none)")
+if(SANITIZE)
+  if(NOT SANITIZE MATCHES "^(thread|address|undefined)$")
+    message(FATAL_ERROR "SANITIZE must be thread, address or undefined (got '${SANITIZE}')")
+  endif()
+  message(STATUS "Sanitizer enabled: ${SANITIZE}")
+  add_compile_options(-fsanitize=${SANITIZE} -g -fno-omit-frame-pointer)
+  add_link_options(-fsanitize=${SANITIZE})
+endif()
+
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
